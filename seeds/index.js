@@ -1,0 +1,39 @@
+const mongoose = require('mongoose');
+const campground = require('../models/campground');
+const { places, descriptors } = require('./seedhelper');
+
+const cities = require('./city');
+mongoose.connect('mongodb://localhost:27017/yelpcamp', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+    console.log('Database connected');
+});
+
+const sample = (array) => {
+    return array[Math.floor(Math.random() * array.length)]
+}
+const seedDB = async () => {
+    await campground.deleteMany({});
+    for (let i = 0; i < 50; i++) {
+        const randNo = Math.floor(Math.random() * 1000);
+        const newcamp = new campground({
+            location: `${cities[randNo].city}, ${cities[randNo].state}`,
+            title: `${sample(descriptors)} ${sample(places)}`,
+            image: 'https://picsum.photos/600/400',
+            description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
+            price: Math.floor(Math.random() * 20) + 10
+        })
+        await newcamp.save();
+    }
+}
+seedDB().then(() => {
+    console.log('Database seeded');
+    mongoose.connection.close();
+})
+    .catch(err => {
+        console.error('Error seeding database:', err);
+    });
