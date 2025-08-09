@@ -6,9 +6,10 @@ const expressError = require('./utils/expressError');
 const catchaync = require('./utils/catchasync');
 const path = require('path');
 const engine = require('ejs-mate');
-
+const Joi = require('joi');
 
 const campground = require('./models/campground');
+const { title } = require('process');
 
 mongoose.connect('mongodb://localhost:27017/yelpcamp', {
     useNewUrlParser: true,
@@ -51,9 +52,24 @@ app.get('/campground/:id', async (req, res) => {
 })
 
 app.post('/campgrounds', catchaync(async (req, res, err) => {
-    if (!req.body.campground) {
-        throw new expressError('Invalid Campground Data', 400);
+    // if (!req.body.campground) {
+    //     throw new expressError('Invalid Campground Data', 400);
+    // }
+    const campgroundSchema = Joi.object({
+        campground: Joi.object({
+            title: Joi.string().required(),
+            price: Joi.number().required().min(0),
+            image: Joi.string().required(),
+            location: Joi.string().required(),
+            description: Joi.string().required()
+        }).required()
+    })
+    const { error } = camgroundSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new expressError(result.error.details[0].message, 400);
     }
+    console.log(result);
     console.log(req.body);
     const newcamp = new campground(req.body.campground);
     await newcamp.save();
@@ -83,6 +99,9 @@ app.all(/(.*)/, (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    const { statusCode = 500, message = "Something went wrong" } = err;
-    res.status(statusCode).render("campgrounds/error");
+    const { statusCode = 500 } = err;
+    if (!err.message) {
+        err.message = 'Something went wrong';
+    }
+    res.status(statusCode).render("campgrounds/error", { err });
 })
