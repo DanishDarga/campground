@@ -33,6 +33,28 @@ app.use(methodOverride('_method'));
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
+
+const validateCampground = (req, res, next) => {
+    const campgroundSchema = Joi.object({
+        campground: Joi.object({
+            title: Joi.string().required(),
+            price: Joi.number().required().min(0),
+            image: Joi.string().required(),
+            location: Joi.string().required(),
+            description: Joi.string().required()
+        }).required()
+    })
+    const { error } = campgroundSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(', ');
+        throw new expressError(msg, 400);
+    }
+    else {
+        next();
+    }
+
+}
+
 app.get('/', (req, res) => {
     res.render('home');
 });
@@ -51,26 +73,11 @@ app.get('/campground/:id', async (req, res) => {
     res.render('campgrounds/show', { Campground });
 })
 
-app.post('/campgrounds', catchaync(async (req, res, err) => {
+app.post('/campgrounds', validateCampground, catchaync(async (req, res, err) => {
     // if (!req.body.campground) {
     //     throw new expressError('Invalid Campground Data', 400);
     // }
-    const campgroundSchema = Joi.object({
-        campground: Joi.object({
-            title: Joi.string().required(),
-            price: Joi.number().required().min(0),
-            image: Joi.string().required(),
-            location: Joi.string().required(),
-            description: Joi.string().required()
-        }).required()
-    })
-    const { error } = camgroundSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',');
-        throw new expressError(result.error.details[0].message, 400);
-    }
-    console.log(result);
-    console.log(req.body);
+
     const newcamp = new campground(req.body.campground);
     await newcamp.save();
     res.redirect(`/campground/${newcamp._id}`);
