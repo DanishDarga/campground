@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const app = express();
+const catchaync = require('./utils/catchasync');
 const path = require('path');
 const engine = require('ejs-mate');
 
@@ -48,12 +49,12 @@ app.get('/campground/:id', async (req, res) => {
     res.render('campgrounds/show', { Campground });
 })
 
-app.post('/campgrounds', async (req, res) => {
+app.post('/campgrounds', catchaync(async (req, res, err) => {
     console.log(req.body);
     const newcamp = new campground(req.body.campground);
     await newcamp.save();
     res.redirect(`/campground/${newcamp._id}`);
-})
+}))
 
 app.get('/campground/:id/edit', async (req, res) => {
     const { id } = req.params;
@@ -72,3 +73,8 @@ app.delete('/campground/:id', async (req, res) => {
     await campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
 });
+
+app.use((err, req, res, next) => {
+    res.send('Something went wrong!');
+    console.error(err);
+})
