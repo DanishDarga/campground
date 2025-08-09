@@ -1,6 +1,6 @@
 <% layout('/layouts/boilerplate') %>
     <h1>Edit Campground</h1>
-    <form action="/campground/<%=Campground._id%>?_method=PUT" method="POST">
+    <form action="/campground/<%=Campground._id%>?_method=PUT" method="POST" class="needs-validation" novalidate>
         <div class="mb-3">
             <label for='title' class="form-label">Title</label>
             <input type="text" class="form-control" value="<%=Campground.title%>" name="campground[title]" id="title"
@@ -13,13 +13,14 @@
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" id="description"
-                name="campground[description]"><%=Campground.description%></textarea>
+            <textarea class="form-control" id="description" name="campground[description]"
+                required><%=Campground.description%></textarea>
             %></textarea>
         </div>
         <div class="mb-3">
             <label for="image" class="form-label">Image</label>
-            <input type="text" class="form-control" value="<%=Campground.image%>" id="image" name="campground[image]">
+            <input type="text" class="form-control" value="<%=Campground.image%>" id="image" name="campground[image]"
+                required>
         </div>
         <div>
             <label for="price" class="form-label">Price</label>
@@ -27,7 +28,7 @@
             <div class="input-group mb-3">
                 <span class="input-group-text">$</span>
                 <input type="text" name=campground[price] class="form-control" id="price" placeholder="0.00"
-                    value="<%=Campground.price%>" aria-label="Amount (to the nearest dollar)">
+                    value="<%=Campground.price%>" aria-label="Amount (to the nearest dollar)" required>
             </div>
         </div>
         <button class="btn btn-info" type="submit">Edit Campground</button>
