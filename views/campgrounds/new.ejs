@@ -4,24 +4,36 @@
             New Campground
         </h1>
         <div class="col-6 offset-3">
-            <form action="/campgrounds" method="POST">
+            <form action="/campgrounds" method="POST" class="needs-validation" novalidate>
                 <div class="mb-3">
                     <label for="title" class="form-label">Title </label>
                     <input type="text" class="form-control" name="campground[title]" id="title"
-                        aria-describedby="EmailHelp">
+                        aria-describedby="EmailHelp" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                     <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
                 </div>
                 <div class="mb-3">
                     <label for="location" class="form-label">Location</label>
-                    <input type="text" class="form-control" id="location" name="campground[location]">
+                    <input type="text" class="form-control" id="location" name="campground[location]" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="campground[description]"></textarea>
+                    <label for="description" class="form-label" d>Description</label>
+                    <textarea class="form-control" id="description" name="campground[description]" required></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="image" class="form-label">Image</label>
-                    <input type="text" class="form-control" id="image" name="campground[image]">
+                    <input type="text" class="form-control" id="image" name="campground[image]" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
                 </div>
                 <div>
                     <label for="price" class="form-label">Price</label>
@@ -29,7 +41,10 @@
                     <div class="input-group mb-3">
                         <span class="input-group-text">$</span>
                         <input type="text" name="campground[price]" class="form-control" id="price" placeholder="0.00"
-                            aria-label="Amount (to the nearest dollar)">
+                            aria-label="Amount (to the nearest dollar)" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
