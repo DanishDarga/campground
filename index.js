@@ -127,7 +127,15 @@ app.post('/campground/:id/reviews', validateReview, catchasync(async (req, res) 
 
 }))
 
-
+app.delete('/campground/:id/reviews/:reviewId', catchasync(async (req, res) => {
+    const { id } = req.params;
+    const { reviewId } = req.params;
+    console.log("I am here");
+    await campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await reviews.findByIdAndDelete(reviewId);
+    console.log("I am here");
+    res.redirect(`/campground/${id}`);
+}))
 app.delete('/campground/:id', async (req, res) => {
     const { id } = req.params;
     await campground.findByIdAndDelete(id);
