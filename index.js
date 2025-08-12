@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const app = express();
 const expressError = require('./utils/expressError');
-const catchaync = require('./utils/catchasync');
+const catchasync = require('./utils/catchasync');
 const path = require('path');
 const engine = require('ejs-mate');
 const Joi = require('joi');
-
+const review = require('./models/review');
 const campground = require('./models/campground');
 const { title } = require('process');
 
@@ -73,7 +73,7 @@ app.get('/campground/:id', async (req, res) => {
     res.render('campgrounds/show', { Campground });
 })
 
-app.post('/campgrounds', validateCampground, catchaync(async (req, res, err) => {
+app.post('/campgrounds', validateCampground, catchasync(async (req, res, err) => {
     // if (!req.body.campground) {
     //     throw new expressError('Invalid Campground Data', 400);
     // }
@@ -94,6 +94,17 @@ app.put('/campground/:id', validateCampground, async (req, res) => {
     const foundCampground = await campground.findByIdAndUpdate(id, { ...req.body.campground });
     res.redirect(`/campground/${foundCampground._id}`);
 });
+app.post('/campground/:id/reviews', catchasync(async (req, res) => {
+    const { id } = req.params;
+    const foundCampground = await campground.findById(id);
+    const review = new review(req.body.review);
+    foundCampground.reviews.push(review);
+    await review.save();
+    await foundCampground.save();
+    res.redirect(`/campground/${foundCampground._id}`);
+
+}))
+
 
 app.delete('/campground/:id', async (req, res) => {
     const { id } = req.params;
