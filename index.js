@@ -71,6 +71,7 @@ const validateReview = (req, res, next) => {
         next();
     }
 }
+
 app.get('/', (req, res) => {
     res.render('home');
 });
@@ -85,7 +86,7 @@ app.get('/campground/new', (req, res) => {
 
 app.get('/campground/:id', async (req, res) => {
     const { id } = req.params;
-    const Campground = await campground.findById(id);
+    const Campground = await campground.findById(id).populate('reviews');
     res.render('campgrounds/show', { Campground });
 })
 
