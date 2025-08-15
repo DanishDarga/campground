@@ -6,19 +6,11 @@ const expressError = require('./utils/expressError');
 const catchasync = require('./utils/catchasync');
 const path = require('path');
 const engine = require('ejs-mate');
-const Joi = require('joi');
-const campground = require('./models/campground');
-const { title, rawListeners } = require('process');
+
 const campgrounds = require('./routes/campground');
 const reviews = require('./routes/reviews');
 
-
-
-
-mongoose.connect('mongodb://localhost:27017/yelpcamp', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+mongoose.connect('mongodb://localhost:27017/yelpcamp');
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -33,17 +25,14 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
 
-console.log("1");
-
 app.use('/campgrounds', campgrounds);
-app.use('/campgrounds', reviews);
-
-console.log("2");
+app.use('/campgrounds/:id/reviews', reviews);
 
 app.all(/(.*)/, (req, res, next) => {
     next(new expressError('Page Not Found', 404));

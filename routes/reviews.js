@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const catchasync = require('../utils/catchasync');
 const Joi = require('joi');
 const campground = require('../models/campground');
@@ -23,7 +23,7 @@ const validateReview = (req, res, next) => {
     }
 }
 
-router.post('/:id/reviews', validateReview, catchasync(async (req, res) => {
+router.post('/', validateReview, catchasync(async (req, res) => {
     const { id } = req.params;
     const foundCampground = await campground.findById(id);
 
@@ -39,13 +39,11 @@ router.post('/:id/reviews', validateReview, catchasync(async (req, res) => {
 
 }))
 
-router.delete('/:id/reviews/:reviewId', catchasync(async (req, res) => {
+router.delete('/:reviewId', catchasync(async (req, res) => {
     const { id } = req.params;
     const { reviewId } = req.params;
-    console.log("I am here");
     await campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await reviews.findByIdAndDelete(reviewId);
-    console.log("I am here");
     res.redirect(`/campgrounds/${id}`);
 }))
 
