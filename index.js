@@ -7,6 +7,7 @@ const catchasync = require('./utils/catchasync');
 const path = require('path');
 const engine = require('ejs-mate');
 const session = require('express-session');
+const flash = require('connect-flash');
 
 const campgrounds = require('./routes/campground');
 const reviews = require('./routes/reviews');
@@ -18,7 +19,6 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
     console.log('Database connected');
 });
-
 
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
@@ -32,13 +32,21 @@ const sessionConfig = {
     secret: 'rew123',
     resave: false,
     saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
+    }
 }
 
 app.use(session(sessionConfig));
+app.use(flash())
 
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+})
 
 app.use('/campgrounds', campgrounds);
 app.use('/campgrounds/:id/reviews', reviews);
@@ -54,3 +62,7 @@ app.use((err, req, res, next) => {
     }
     res.status(statusCode).render("campgrounds/error", { err });
 })
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
