@@ -66,4 +66,11 @@ router.put('/:id', validateCampground, async (req, res) => {
     res.redirect(`/campgrounds/${foundCampground._id}`);
 });
 
+router.delete('/campgrounds/:id', async (req, res) => {
+    const { id } = req.params;
+    await campground.findByIdAndDelete(id);
+    res.redirect('/campgrounds');
+});
+
+
 module.exports = router;
