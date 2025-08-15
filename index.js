@@ -6,6 +6,7 @@ const expressError = require('./utils/expressError');
 const catchasync = require('./utils/catchasync');
 const path = require('path');
 const engine = require('ejs-mate');
+const session = require('express-session');
 
 const campgrounds = require('./routes/campground');
 const reviews = require('./routes/reviews');
@@ -26,6 +27,14 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+const sessionConfig = {
+    secret: 'rew123',
+    resave: false,
+    saveUninitialized: true,
+}
+
+app.use(session(sessionConfig));
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
