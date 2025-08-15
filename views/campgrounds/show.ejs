@@ -19,16 +19,16 @@
                     </li>
                 </ul>
                 <div class="card-body">
-                    <a href="/campground/<%=Campground._id%>/edit" class="card-link btn btn-warning">Edit</a>
+                    <a href="/campgrounds/<%=Campground._id%>/edit" class="card-link btn btn-warning">Edit</a>
                     <a href="#" class="card-link">
-                        <form class="d-inline" action="/campground/<%=Campground._id%>?_method=DELETE" method="POST">
+                        <form class="d-inline" action="/campgrounds/<%=Campground._id%>?_method=DELETE" method="POST">
                             <button class="btn btn-danger" type="submit">Delete</button>
                         </form>
                     </a>
                 </div>
 
             </div>
-            <form action="/campground/<%=Campground._id%>/reviews" class="needs-validation mb-3" method="POST"
+            <form action="/campgrounds/<%=Campground._id%>/reviews" class="needs-validation mb-3" method="POST"
                 novalidate>
                 <h3>Add a Review</h3>
                 <div class="mb-3">
@@ -59,7 +59,7 @@
                             </p>
                         </div>
                         <form class="card-footer"
-                            action="/campground/<%=Campground._id%>/reviews/<%=review._id%>?_method=DELETE"
+                            action="/campgrounds/<%=Campground._id%>/reviews/<%=review._id%>?_method=DELETE"
                             method="POST">
                             <button class="btn btn-danger btn-sm" type="submit">Delete Review</button>
                         </form>

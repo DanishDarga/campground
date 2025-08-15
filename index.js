@@ -10,6 +10,8 @@ const Joi = require('joi');
 const reviews = require('./models/review');
 const campground = require('./models/campground');
 const { title, rawListeners } = require('process');
+const campgrounds = require('./routes/campground');
+
 
 mongoose.connect('mongodb://localhost:27017/yelpcamp', {
     useNewUrlParser: true,
@@ -34,26 +36,7 @@ app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
 
-const validateCampground = (req, res, next) => {
-    const campgroundSchema = Joi.object({
-        campground: Joi.object({
-            title: Joi.string().required(),
-            price: Joi.number().required().min(0),
-            image: Joi.string().required(),
-            location: Joi.string().required(),
-            description: Joi.string().required()
-        }).required()
-    })
-    const { error } = campgroundSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(el => el.message).join(', ');
-        throw new expressError(msg, 400);
-    }
-    else {
-        next();
-    }
 
-}
 
 const validateReview = (req, res, next) => {
     const reviewSchema = Joi.object({
@@ -72,46 +55,9 @@ const validateReview = (req, res, next) => {
     }
 }
 
-app.get('/', (req, res) => {
-    res.render('home');
-});
-app.get('/campgrounds', async (req, res) => {
-    const campgrounds = await campground.find({});
-    res.render('campgrounds/index', { campgrounds });
-})
+app.use('/campgrounds', campgrounds);
 
-app.get('/campground/new', (req, res) => {
-    res.render('campgrounds/new');
-});
-
-app.get('/campground/:id', async (req, res) => {
-    const { id } = req.params;
-    const Campground = await campground.findById(id).populate('reviews');
-    res.render('campgrounds/show', { Campground });
-})
-
-app.post('/campgrounds', validateCampground, catchasync(async (req, res, err) => {
-    // if (!req.body.campground) {
-    //     throw new expressError('Invalid Campground Data', 400);
-    // }
-
-    const newcamp = new campground(req.body.campground);
-    await newcamp.save();
-    res.redirect(`/campground/${newcamp._id}`);
-}))
-
-app.get('/campground/:id/edit', async (req, res) => {
-    const { id } = req.params;
-    const Campground = await campground.findById(id);
-    res.render('campgrounds/edit', { Campground })
-})
-
-app.put('/campground/:id', validateCampground, async (req, res) => {
-    const { id } = req.params;
-    const foundCampground = await campground.findByIdAndUpdate(id, { ...req.body.campground });
-    res.redirect(`/campground/${foundCampground._id}`);
-});
-app.post('/campground/:id/reviews', validateReview, catchasync(async (req, res) => {
+app.post('/campgrounds/:id/reviews', validateReview, catchasync(async (req, res) => {
     const { id } = req.params;
     const foundCampground = await campground.findById(id);
 
@@ -127,7 +73,7 @@ app.post('/campground/:id/reviews', validateReview, catchasync(async (req, res) 
 
 }))
 
-app.delete('/campground/:id/reviews/:reviewId', catchasync(async (req, res) => {
+app.delete('/campgrounds/:id/reviews/:reviewId', catchasync(async (req, res) => {
     const { id } = req.params;
     const { reviewId } = req.params;
     console.log("I am here");
@@ -136,7 +82,7 @@ app.delete('/campground/:id/reviews/:reviewId', catchasync(async (req, res) => {
     console.log("I am here");
     res.redirect(`/campground/${id}`);
 }))
-app.delete('/campground/:id', async (req, res) => {
+app.delete('/campgrounds/:id', async (req, res) => {
     const { id } = req.params;
     await campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
