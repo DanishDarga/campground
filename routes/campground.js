@@ -4,7 +4,7 @@ const catchasync = require('../utils/catchasync');
 const campground = require('../models/campground');
 const Joi = require('joi');
 const expressError = require('../utils/expressError');
-const isLoggedin = require('../middleware');
+const { isLoggedin } = require('../middleware');
 
 const validateCampground = (req, res, next) => {
     const campgroundSchema = Joi.object({

@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/user');
 const passport = require('passport');
 const catchasync = require('../utils/catchasync');
+const { storeReturnTo } = require('../middleware');
 
 router.get('/register', async (req, res) => {
     res.render('user/register');
@@ -33,14 +34,16 @@ router.get('/login', (req, res) => {
 })
 
 
-router.post('/login',
+router.post('/login', storeReturnTo,
     passport.authenticate('local', {
         failureFlash: true,
         failureRedirect: '/login'
     }),
     (req, res) => {
         req.flash("success", `Welcome back ${req.user.username}`); // safer: use req.user instead of req.body
-        res.redirect('/campgrounds');
+        const redirectUrl = res.locals.returnTo || '/campgrounds';
+        delete req.session.returnTo;
+        res.redirect(redirectUrl);
     }
 );
 
