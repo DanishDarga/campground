@@ -22,15 +22,21 @@
             </ul>
         </div>
         <div class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a href='/login' class="nav-link ">Log In</a>
-            </li>
-            <li class="nav-item">
-                <a href='/logout' class="nav-link">Log Out</a>
-            </li>
-            <li class="nav-item">
-                <a href='/register' class="nav-link">Register</a>
-            </li>
+            <% if(!currentUser) { %>
+                <li class="nav-item">
+                    <a href='/login' class="nav-link ">Log In</a>
+                </li>
+                <li class="nav-item">
+                    <a href='/register' class="nav-link">Register</a>
+                </li>
+                <% } else { %>
+                    <li class="nav-item">
+                        <a href='/logout' class="nav-link">Log Out</a>
+                    </li>
+                    <% } %>
+
+
+
         </div>
     </div>
 </nav>
