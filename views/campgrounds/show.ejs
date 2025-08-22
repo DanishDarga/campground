@@ -20,14 +20,17 @@
                     <li class="list-group-item">Created By: <%= Campground.author.username %>
                     </li>
                 </ul>
-                <div class="card-body">
-                    <a href="/campgrounds/<%=Campground._id%>/edit" class="card-link btn btn-warning">Edit</a>
-                    <a href="#" class="card-link">
-                        <form class="d-inline" action="/campgrounds/<%=Campground._id%>?_method=DELETE" method="POST">
-                            <button class="btn btn-danger" type="submit">Delete</button>
-                        </form>
-                    </a>
-                </div>
+                <% if(currentUser && Campground.author._id.equals(currentUser._id)){%>
+                    <div class="card-body">
+                        <a href="/campgrounds/<%=Campground._id%>/edit" class="card-link btn btn-warning">Edit</a>
+                        <a href="#" class="card-link">
+                            <form class="d-inline" action="/campgrounds/<%=Campground._id%>?_method=DELETE"
+                                method="POST">
+                                <button class="btn btn-danger" type="submit">Delete</button>
+                            </form>
+                        </a>
+                    </div>
+                    <% } %>
 
             </div>
             <form action="/campgrounds/<%=Campground._id%>/reviews" class="needs-validation mb-3" method="POST"
