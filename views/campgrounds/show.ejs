@@ -17,6 +17,8 @@
                     </li>
                     <li class="list-group-item">Price: $<%= Campground.price %>
                     </li>
+                    <li class="list-group-item">Created By: <%= Campground.author.username %>
+                    </li>
                 </ul>
                 <div class="card-body">
                     <a href="/campgrounds/<%=Campground._id%>/edit" class="card-link btn btn-warning">Edit</a>
