@@ -5,6 +5,7 @@ const Joi = require('joi');
 const campground = require('../models/campground');
 const expressError = require('../utils/expressError');
 const reviews = require('../models/review');
+const { validateReview } = require('../middleware');
 
 const validateReview = (req, res, next) => {
     const reviewSchema = Joi.object({

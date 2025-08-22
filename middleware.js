@@ -1,5 +1,5 @@
 const campground = require('./models/campground');
-const Joi = require('joi');
+const { campgroundSchema, reviewSchema } = require('./schemas')
 const expressError = require('./utils/expressError');
 
 const isLoggedin = (req, res, next) => {
@@ -20,15 +20,6 @@ const storeReturnTo = (req, res, next) => {
 
 
 const validateCampground = (req, res, next) => {
-    const campgroundSchema = Joi.object({
-        campground: Joi.object({
-            title: Joi.string().required(),
-            price: Joi.number().required().min(0),
-            image: Joi.string().required(),
-            location: Joi.string().required(),
-            description: Joi.string().required()
-        }).required()
-    })
     const { error } = campgroundSchema.validate(req.body);
     if (error) {
         const msg = error.details.map(el => el.message).join(', ');
@@ -49,4 +40,16 @@ const isAuthor = async (req, res, next) => {
 }
 
 
-module.exports = { isLoggedin, storeReturnTo, validateCampground, isAuthor };
+const validateReview = (req, res, next) => {
+
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(', ');
+        throw new expressError(msg, 400);
+    }
+    else {
+        next();
+    }
+}
+
+module.exports = { isLoggedin, storeReturnTo, validateCampground, isAuthor, validateReview };
