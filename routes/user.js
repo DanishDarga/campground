@@ -41,8 +41,16 @@ router.post('/login', storeReturnTo,
     }),
     (req, res) => {
         req.flash("success", `Welcome back ${req.user.username}`); // safer: use req.user instead of req.body
-        const redirectUrl = res.locals.returnTo || '/campgrounds';
+        let redirectUrl = res.locals.returnTo || '/campgrounds';
         delete req.session.returnTo;
+
+        // If the user was trying to create, update, or delete a review, the returnTo URL will be
+        // something like /campgrounds/:id/reviews/... which doesn't have a GET route.
+        // We'll intercept this and redirect them to the campground's show page instead.
+        if (redirectUrl.includes('/reviews')) {
+            const campgroundId = redirectUrl.split('/')[2];
+            redirectUrl = `/campgrounds/${campgroundId}`;
+        }
         res.redirect(redirectUrl);
     }
 );
