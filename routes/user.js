@@ -1,37 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
 const passport = require('passport');
-const catchasync = require('../utils/catchasync');
 const { storeReturnTo } = require('../middleware');
+const user = require('../controllers/user');
 
-router.get('/register', async (req, res) => {
-    res.render('user/register');
-})
+router.get('/register', user.renderRegister)
 
-router.post('/register', async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
-        const user = new User({ email, username });
-        const registeredUser = await User.register(user, password);
-        console.log("Registered User Successfully");
-        req.login(registeredUser, err => {
-            if (err) {
-                return next(err);
-            }
-            req.flash('success', 'Successfully registered');
-            res.redirect('/campgrounds');
-        })
+router.post('/register', user.register);
 
-    } catch (e) {
-        req.flash('error', e.message);
-        res.redirect('/register');
-    }
-});
-
-router.get('/login', (req, res) => {
-    res.render('user/login');
-})
+router.get('/login', user.renderLogin)
 
 
 router.post('/login', storeReturnTo,
@@ -39,29 +16,9 @@ router.post('/login', storeReturnTo,
         failureFlash: true,
         failureRedirect: '/login'
     }),
-    (req, res) => {
-        req.flash("success", `Welcome back ${req.user.username}`); // safer: use req.user instead of req.body
-        let redirectUrl = res.locals.returnTo || '/campgrounds';
-        delete req.session.returnTo;
-
-        // If the user was trying to create, update, or delete a review, the returnTo URL will be
-        // something like /campgrounds/:id/reviews/... which doesn't have a GET route.
-        // We'll intercept this and redirect them to the campground's show page instead.
-        if (redirectUrl.includes('/reviews')) {
-            const campgroundId = redirectUrl.split('/')[2];
-            redirectUrl = `/campgrounds/${campgroundId}`;
-        }
-        res.redirect(redirectUrl);
-    }
+    user.login
 );
 
-router.get('/logout', (req, res, next) => {
-    req.logout(function (err) {
-        if (err) {
-            return next(err);
-        }
-        req.flash('success', 'Logged out successfully!');
-        res.redirect('/campgrounds');
-    });
-});
+router.get('/logout', user.logout);
+
 module.exports = router;
