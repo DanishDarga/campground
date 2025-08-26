@@ -1,6 +1,7 @@
 <% layout('/layouts/boilerplate') %>
     <h1>Edit Campground</h1>
-    <form action="/campgrounds/<%=Campground._id%>?_method=PUT" method="POST" class="needs-validation" novalidate>
+    <form action="/campgrounds/<%=Campground._id%>?_method=PUT" method="POST" class="needs-validation"
+        enctype="multipart/form-data" novalidate>
         <div class="mb-3">
             <label for='title' class="form-label">Title</label>
             <input type="text" class="form-control" value="<%=Campground.title%>" name="campground[title]" id="title"
@@ -19,8 +20,9 @@
         </div>
         <div class="mb-3">
             <label for="image" class="form-label">Image</label>
-            <input type="text" class="form-control" value="<%=Campground.image%>" id="image" name="campground[image]"
-                required>
+            <!-- <input type="text" class="form-control" value="<%=Campground.image%>" id="image" name="campground[image]"
+                required> -->
+            <input type="file" name="image" id="image" class="form-control" multiple>
         </div>
         <div>
             <label for="price" class="form-label">Price</label>

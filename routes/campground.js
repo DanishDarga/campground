@@ -22,7 +22,7 @@ router.post('/', isLoggedin, validateCampground, upload.array('image'), catchasy
 
 router.get('/:id/edit', isLoggedin, isAuthor, campgrounds.editCamp)
 
-router.put('/:id', isLoggedin, isAuthor, validateCampground, campgrounds.vieweditCamp);
+router.put('/:id', isLoggedin, isAuthor, validateCampground, upload.array('image'), campgrounds.vieweditCamp);
 
 router.delete('/:id', isLoggedin, isAuthor, campgrounds.deleteCamp);
 
