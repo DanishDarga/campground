@@ -11,7 +11,9 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
-
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 const campgroundRoutes = require('./routes/campground');
 const reviewRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/user');
