@@ -18,11 +18,7 @@ router.get('/new', isLoggedin, campgrounds.newForm);
 
 router.get('/:id', catchasync(campgrounds.viewCamp));
 
-// router.post('/', isLoggedin, validateCampground, catchasync(campgrounds.createCamp));
-router.post('/', upload.single('image'), (req, res) => {
-    console.log(req.body);
-    console.log(req.file);
-})
+router.post('/', isLoggedin, validateCampground, upload.array('image'), catchasync(campgrounds.createCamp));
 
 router.get('/:id/edit', isLoggedin, isAuthor, campgrounds.editCamp)
 
