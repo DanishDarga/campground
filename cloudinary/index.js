@@ -12,7 +12,7 @@ const storage = new CloudinaryStorage({
     params: {
         folder: 'YelpCamp',
         // supports promises as well
-        public_id: (req, file) => 'computed-filename-using-request',
+        public_id: (req, file) => Date.now().toString(),
     },
 });
 module.exports = { cloudinary, storage }; 
