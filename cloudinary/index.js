@@ -1,4 +1,6 @@
 const cloudinary = require('cloudinary').v2
+const { v4: uuidv4 } = require('uuid');
+
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 cloudinary.config({
@@ -12,7 +14,7 @@ const storage = new CloudinaryStorage({
     params: {
         folder: 'YelpCamp',
         // supports promises as well
-        public_id: (req, file) => Date.now().toString(),
+        public_id: (req, file) => uuidv4(),
     },
 });
 module.exports = { cloudinary, storage }; 
