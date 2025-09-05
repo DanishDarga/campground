@@ -1,5 +1,20 @@
 const campground = require('../models/campground');
 const { cloudinary } = require('../cloudinary/index')
+const axios = require("axios");
+
+async function geocode(address) {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+    const response = await axios.get(url, {
+        headers: { "User-Agent": "yelpcamp-app" } // Required by Nominatim
+    });
+
+    if (response.data.length > 0) {
+        const { lat, lon } = response.data[0];
+        return { lat, lon };
+    } else {
+        throw new Error("No results found");
+    }
+}
 
 module.exports.index = async (req, res) => {
     const campgrounds = await campground.find({});
@@ -25,11 +40,13 @@ module.exports.viewCamp = async (req, res) => {
     res.render('campgrounds/show', { Campground });
 }
 
-module.exports.createCamp = async (req, res, err) => {
+module.exports.createCamp = async (req, res, next) => {
     // if (!req.body.campground) {
     //     throw new expressError('Invalid Campground Data', 400);
     // }
     const newcamp = new campground(req.body.campground);
+    const { lat, lon } = await geocode(newcamp.location);
+    newcamp.geometry = { type: "Point", coordinates: [lon, lat] };
     newcamp.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
     newcamp.author = req.user._id;
     await newcamp.save();
