@@ -1,35 +1,72 @@
 <% layout('/layouts/boilerplate') %>
-    <a href="campgrounds/new"><button class="btn btn-primary my-3" type="button">Add new campGround</button></a>
-    <% for(let campground of campgrounds) { %>
-        <div class="card mb-3">
-            <div class="row">
-                <div class="col-md-4">
-                    <% if(campground.images.length> 0){ %>
-                        <img class="img-fluid" src="<%=campground.images[0].url%>" alt="Campground Image">
-                        <% } else { %>
-                            <img class="img-fluid"
-                                src="https://e7.pngegg.com/pngimages/829/733/png-clipart-logo-brand-product-trademark-font-not-found-logo-brand.png"
-                                alt="No Image Available">
-                            <% } %>
-                </div>
-                <div class="col-md-4">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <a href="/campgrounds/<%= campground._id %>">
-                                <%= campground.title %>
-                            </a>
-                            <p class="card-text">
-                                <%= campground.description %>
-                            </p>
-                            <p class="card-text">
-                                <small class="text-muted">
-                                    <%= campground.location %>
-                                </small>
-                            </p>
-                            <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">View</a>
-                        </h5>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <%}%>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""
+/>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+/>
+
+<div id="map" style="width: 100%; height: 500px"></div>
+
+<a href="campgrounds/new"
+  ><button class="btn btn-primary my-3" type="button">
+    Add new campGround
+  </button></a
+>
+<% for(let campground of campgrounds) { %>
+<div class="card mb-3">
+  <div class="row">
+    <div class="col-md-4">
+      <% if(campground.images.length> 0){ %>
+      <img
+        class="img-fluid"
+        src="<%=campground.images[0].url%>"
+        alt="Campground Image"
+      />
+      <% } else { %>
+      <img
+        class="img-fluid"
+        src="https://e7.pngegg.com/pngimages/829/733/png-clipart-logo-brand-product-trademark-font-not-found-logo-brand.png"
+        alt="No Image Available"
+      />
+      <% } %>
+    </div>
+    <div class="col-md-4">
+      <div class="card-body">
+        <h5 class="card-title">
+          <a href="/campgrounds/<%= campground._id %>">
+            <%= campground.title %>
+          </a>
+          <p class="card-text"><%= campground.description %></p>
+          <p class="card-text">
+            <small class="text-muted"> <%= campground.location %> </small>
+          </p>
+          <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary"
+            >View</a
+          >
+        </h5>
+      </div>
+    </div>
+  </div>
+</div>
+<%}%>
+
+<script type="importmap">
+  {
+    "imports": {
+      "leaflet": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+      "leaflet.markercluster": "https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js",
+      "@maptiler/leaflet-maptilersdk": "https://unpkg.com/@maptiler/leaflet-maptilersdk@1.2.1/dist/leaflet-maptilersdk.esm.js"
+    }
+  }
+</script>
+<script type="module" src="/js/mapbox.js"></script>
