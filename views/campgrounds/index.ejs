@@ -1,20 +1,5 @@
 <% layout('/layouts/boilerplate') %>
 
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-  crossorigin=""
-/>
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-/>
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
-/>
-
 <div id="map" style="width: 100%; height: 500px"></div>
 
 <a href="campgrounds/new"
@@ -60,13 +45,8 @@
 </div>
 <%}%>
 
-<script type="importmap">
-  {
-    "imports": {
-      "leaflet": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
-      "leaflet.markercluster": "https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js",
-      "@maptiler/leaflet-maptilersdk": "https://unpkg.com/@maptiler/leaflet-maptilersdk@1.2.1/dist/leaflet-maptilersdk.esm.js"
-    }
-  }
+<script>
+  // Pass campground data from EJS to a global JavaScript variable
+  window.campgrounds = <%- JSON.stringify(campgrounds) %>;
 </script>
-<script type="module" src="/js/mapbox.js"></script>
+<script src="/js/mapbox.js"></script>
