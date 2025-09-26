@@ -1,4 +1,4 @@
-const map = L.map("map").setView([39.8283, -98.5795], 3);
+const map = L.map("cluster-map").setView([39.8283, -98.5795], 3);
 
 const campgrounds = window.campgrounds || [];
 
