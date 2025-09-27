@@ -17,7 +17,7 @@ router.get("/:id", catchasync(campgrounds.viewCamp));
 router.post(
   "/",
   isLoggedin,
-  upload.array("image"), // ✅ multer first
+  upload.array("campground[image]"), // ✅ multer first
   validateCampground, // ✅ Joi next
   catchasync(campgrounds.createCamp) // ✅ controller
 );
