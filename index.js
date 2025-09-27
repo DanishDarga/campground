@@ -82,7 +82,9 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   next();
 });
-
+app.get("/", (req, res) => {
+  res.render("home");
+});
 app.get("/home", (req, res) => {
   res.render("home");
 });
