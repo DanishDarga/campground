@@ -8,17 +8,26 @@ const path = require("path");
 const engine = require("ejs-mate");
 const session = require("express-session");
 const flash = require("connect-flash");
+const expressMongoSanitize = require("@exortek/express-mongo-sanitize");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const helmet = require("helmet");
+const MongoDBStore = require("connect-mongo");
 const User = require("./models/user");
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
+
+// if (process.env.NODE_ENV !== "production") {
+require("dotenv").config();
+// }
 const campgroundRoutes = require("./routes/campground");
 const reviewRoutes = require("./routes/reviews");
 const userRoutes = require("./routes/user");
+const db_url = process.env.dburl;
+console.log("DB URL:", db_url);
 
-mongoose.connect("mongodb://localhost:27017/yelpcamp");
+mongoose.connect(db_url, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
@@ -26,14 +35,29 @@ db.once("open", () => {
   console.log("Database connected");
 });
 
+app.use(helmet({ contentSecurityPolicy: false }));
 app.engine("ejs", engine);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-
+app.use(expressMongoSanitize());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
+
+const storeVariable = MongoDBStore.create({
+  mongoUrl: db_url,
+  touchAfter: 24 * 60 * 60,
+  crypto: {
+    secret: "rew123",
+  },
+});
+
+storeVariable.on("error", function (e) {
+  console.log("SESSION STORE ERROR", e);
+});
+
 const sessionConfig = {
+  store: storeVariable,
   secret: "rew123",
   resave: false,
   saveUninitialized: true,

@@ -41,6 +41,6 @@
 
       <script>
         // Pass campground data from EJS to a global JavaScript variable
-        window.campgrounds = <%= JSON.stringify(campgrounds) %>;
+        window.campgrounds = <%- JSON.stringify(campgrounds) %>;
       </script>
       <script src="/js/mapbox.js"></script>
