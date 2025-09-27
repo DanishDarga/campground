@@ -24,10 +24,14 @@ const userRoutes = require("./routes/user");
 const db_url = process.env.dburl;
 console.log("DB URL:", db_url);
 
-mongoose.connect(db_url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose
+  .connect(db_url)
+  .then(() => {
+    console.log("MongoDB connected");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
